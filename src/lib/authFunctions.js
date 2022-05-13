@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import {
   getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword,
-  signInWithPopup, GoogleAuthProvider, signOut,
-  // eslint-disable-next-line import/no-unresolved
-} from 'https://www.gstatic.com/firebasejs/9.6.11/firebase-auth.js';
-import { app } from './config.js';
+  signInWithPopup, GoogleAuthProvider, signOut, collection, addDoc, onSnapshot, deleteDoc, doc, getDoc,
+} from './fbFunctions';
+
+import { app, db } from './config.js';
 
 export const auth = getAuth(app);
 
@@ -29,3 +29,17 @@ export const signGoogle = () => signInWithPopup(auth, provider);
 
 // auth Log out
 export const signOutFirebase = () => signOut(auth);
+
+// firestore
+
+export const saveTask = (description, author, createdAt) => addDoc(collection(db, 'tasks'), { description, author, createdAt });
+export const onSnapshotFb = (callback) => onSnapshot(collection(db, 'tasks'), (callback));
+export const deletePost = (id) => deleteDoc(doc(db, 'tasks', id));
+
+// Obtener data de usuario
+export const getCurrentUserFb = () => {
+  const user = auth.currentUser.uid;
+  return user;
+};
+// Función para editar post
+export const getPostForEditFb = (id) => getDoc(doc(db, 'post', id));

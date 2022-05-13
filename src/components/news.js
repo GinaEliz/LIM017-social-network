@@ -1,5 +1,6 @@
-import { signOutFirebase, auth } from '../lib/authFunctions.js';
-import { saveTask, onSnapshotFb, deletePost } from '../lib/firestoreFunctions.js';
+import {
+  signOutFirebase, auth, saveTask, onSnapshotFb, deletePost,
+} from '../lib/authFunctions.js';
 
 const newsDisplay = () => {
   const newsPage = `
@@ -62,13 +63,13 @@ const newsDisplay = () => {
       /* console.log(doc.data()); */
       // doc.data transforma los datos de un objeto de firebase a un objeto de javascript
       html += `
-      <form class="post-container">
-      <p class='autor-post'>${dataPost.author} </p> 
-      <p class='description-post'>${dataPost.description} </p> 
-      <p class='time-post'>${dataPost.createdAt} </p>
-      <button class='btn-borrar' data-id="${doc.id}")>Borrar</button>  
-    </form>
-            `;
+        <form class="post-container">
+        <p class='autor-post'>${dataPost.author} </p> 
+        <p class='description-post'>${dataPost.description} </p> 
+        <p class='time-post'>${dataPost.createdAt} </p>
+        <button class='btn-borrar' data-id="${doc.id}")>Borrar</button>  
+      </form>
+              `;
     });
     tasks.innerHTML = html;
 
@@ -102,12 +103,3 @@ const newsDisplay = () => {
   return divElement;
 };
 export default newsDisplay;
-
-/* window.addEventListener('DOMContentLoaded', () => {
-  console.log('start news');
-   const postContainer = document.querySelector('.post-container');
-  postContainer.addEventListener((e) => {
-    e.preventDefault()
-    console.log('enviado')
-  });
-});  */
