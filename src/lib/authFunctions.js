@@ -2,7 +2,7 @@
 import {
   getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword,
   signInWithPopup, GoogleAuthProvider, signOut, collection, addDoc, onSnapshot, deleteDoc, doc, getDoc,
-} from './fbFunctions';
+} from './firebaseFunctions';
 
 import { app, db } from './config.js';
 

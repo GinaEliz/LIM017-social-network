@@ -1,3 +1,6 @@
+// LINKS CONFIGURACIÓN
+export { app, db } from './config';
+
 // Link firebase
 export {
   getAuth,
