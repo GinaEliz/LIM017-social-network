@@ -73,15 +73,6 @@ const newsDisplay = () => {
       /* console.log(doc.data()); */
       // doc.data transforma los datos de un objeto de firebase a un objeto de javascript
       html += `
-<<<<<<< HEAD
-        <form class="post-container">
-        <p class='autor-post'>${dataPost.author} </p> 
-        <p class='description-post'>${dataPost.description} </p> 
-        <p class='time-post'>${dataPost.createdAt} </p>
-        <button class='btn-borrar' data-id="${doc.id}")>Borrar</button>  
-      </form>
-              `;
-=======
     <form class='post-container'>
       <p class='email-post'>${dataPost.email} </p> 
       <p class='description-post' >${dataPost.description} 
@@ -90,7 +81,6 @@ const newsDisplay = () => {
       <button data-id="${doc.id}" class='btn-edit'${dataPost.email === JSON.parse(localStorage.getItem('userEmail')).emailUser ? '' : 'disabled'}>Editar</button>
       </form>
             `;
->>>>>>> 1f0aeb2fc3a3fd48223331f516200cafa8c8cb81
     });
     posts.innerHTML = html;
     const btnDelete = divElement.querySelectorAll('.btn-delete');
