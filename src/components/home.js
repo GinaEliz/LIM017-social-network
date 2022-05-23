@@ -1,4 +1,4 @@
-export default () => {
+const homeDisplay = () => {
   const homePage = `
   <section id="welcomePage">
 
@@ -16,7 +16,7 @@ export default () => {
   </section>
   `;
   const divElement = document.createElement('div');
-  /* console.log(divElement);  */
   divElement.innerHTML = homePage;
   return divElement;
 };
+export default homeDisplay;
