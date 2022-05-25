@@ -1,60 +1,57 @@
-import { signOutFirebase, auth } from '../lib/authFunctions.js';
 import {
-  saveTask,
+  signOutFirebase, auth, saveTask,
   onSnapshotFb,
   deletePost,
-  // getPost,
-  /* editPost, */
-} from '../lib/firestoreFunctions.js';
+  getPost,
+  editPost,
+} from '../lib/functionsController.js';
 
 const newsDisplay = () => {
   const divElement = document.createElement('div');
   const newsPage = `
-  <section class="header">
-        <nav class="header-nav">
-            <div class="logos-container">
-                <img src="../pics/logo-news.png" alt="logo" class="logo">
+  <section class='header'>
+        <nav class='header-nav'>
+            <div class='logos-container'>
+                <img src='../pics/logo-news.png' alt='logo' class='logo'>
             </div>
-
-            <div class="nav-container">
-                <div for="check" class="search-lup">
-                    <i class="fa-solid fa-magnifying-glass"></i>
+            <div class='nav-container'>
+                <div for='check' class='search-lup'>
+                    <i class='fa-solid fa-magnifying-glass'></i>
                 </div>
-
-                <input type="search" class="search-nav" id="search" placeholder="Search...">
-
-                <div for="check" class="search" id="logOut">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <input type='search' class='search-nav' id='search' placeholder='Search...'>
+                <div for='check' class='search' id='logOut'>
+                <i class='fa-solid fa-arrow-right-from-bracket'></i>
                 </div>
             </div>
         </nav>
     </section>
     
-        <section class="public-container ">
-            <div class="direct-access">
-                <div class="home-option">
-                    <i class="fa-solid fa-house"></i>
+        <section class='public-container '>
+            <div class='direct-access'>
+                <div class='home-option'>
+                    <i class='fa-solid fa-house'></i>
                 </div>
-                <div class="destacado-option">
-                    <i class="fa-solid fa-star"></i>
+                <div class='destacado-option'>
+                    <i class='fa-solid fa-star'></i>
                     Destacado
                 </div>
-                <div class="recomendaciones-option">
-                    <i class="fa-solid fa-comments"></i>
+                <div class='recomendaciones-option'>
+                    <i class='fa-solid fa-comments'></i>
                     Recomendaciones
                 </div>
             </div>
             <form>
-            <div class="post-container" id="posts">
-            <input type="text" id="description" class="post-text" placeholder="¿Qué estas pensando?" required="required">
-            <div class="button-post">
-                    <button id="postSubmit" class="post-comment">Publicar</button>
+            <div class='post-container' id='posts'>
+            <input type='text' id='description' class='post-text' placeholder='¿Qué estas pensando?'>
+            <p class='post-message' id='post-message-alert'>Campo vacío.Por favor ingrese texto</p>
+            <div class='button-post'>
+                <button id='postSubmit' class='post-comment'>Publicar</button>
                 </div>
             </div>
             </form>
         </section>
     </div>
-    <div class="post-publish" id='post-Publish'>
+    <div class='post-publish' id='post-Publish'>
     </div>
     `;
   divElement.innerHTML = newsPage;
@@ -69,11 +66,14 @@ const newsDisplay = () => {
       html += `
     <form class='post-container'>
       <p class='email-post'>${dataPost.email} </p> 
-      <p class='description-post' >${dataPost.description} 
+      <textarea readonly class='description-post' id='textarea-post${doc.id}'> ${dataPost.description} </textarea>
       <p class='time-post'>${dataPost.createdAt} </p>
-      <button data-id="${doc.id}" class='btn-delete'${dataPost.email === JSON.parse(localStorage.getItem('userEmail')).emailUser ? '' : 'disabled'}>Borrar</button>
-      <button data-id="${doc.id}" class='btn-edit'${dataPost.email === JSON.parse(localStorage.getItem('userEmail')).emailUser ? '' : 'disabled'}>Editar</button>
-      </form>
+
+      <button data-id='${doc.id}' class='btn-delete'${dataPost.email === JSON.parse(localStorage.getItem('userEmail')).emailUser ? '' : 'disabled'}>Borrar</button>
+      <button data-id='${doc.id}' class='btn-edit'${dataPost.email === JSON.parse(localStorage.getItem('userEmail')).emailUser ? '' : 'disabled'}>Editar</button>
+      <button class='hidden' id='btn-Ok${doc.id}'>Ok</button>
+    
+    </form>
             `;
     });
     posts.innerHTML = html;
@@ -85,22 +85,38 @@ const newsDisplay = () => {
         console.log(JSON.parse(localStorage.getItem('userEmail'))); */
       });
     });
-    /* const btnEdit = divElement.querySelectorAll('.btn-edit');
-    btnEdit.forEach((btn) => {
-      btn.addEventListener('click', ({ target: { dataset } }) => {
-        deletePost(dataset.id);
-      }); */
-    /* btn.addEventListener('click', ({ target: { dataset } }) => {
-      editPost( dataset.id, { author: 'abc' });
-    }); */
+    const btnsEdit = divElement.querySelectorAll('.btn-edit');
+    btnsEdit.forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        const doc = await getPost(e.target.dataset.id);
+        /* const dataPost = doc.data(); */
+        const txtarea = document.querySelector(`#textarea-post${doc.id}`);
+        txtarea.removeAttribute('readonly');
+        /* document.querySelector('.post-text').value = dataPost.description; */
+        const btnOk = document.querySelector(`#btn-Ok${doc.id}`);
+        btnOk.classList.remove('hidden');
+        btnOk.addEventListener('click', () => {
+          txtarea.setAttribute('readonly', '');
+          editPost(doc.id, { description: txtarea.value });
+        });
+      });
+    });
   });
+
   divElement.querySelector('#postSubmit').addEventListener('click', () => {
     const authorId = auth.currentUser;
-    const inputDes = divElement.querySelector('#description').value;
+    const inputDescription = divElement.querySelector('#description').value;
     const todayDate = new Date();
-    saveTask(inputDes, authorId.email, todayDate);
+    // saveTask(inputDescription, authorId.email, todayDate);
     /* window.location.href = '#/news'; */
-    divElement.querySelector('#description').value = '';
+    if (inputDescription === '') {
+      document.getElementById('post-message-alert').classList.remove('post-message');
+    } else {
+      saveTask(inputDescription, authorId.email, todayDate);
+      document.getElementById('post-message-alert').classList.add('post-message');
+      divElement.querySelector('#description').value = '';
+    }
+    // divElement.querySelector('#description').value = '';
     /* posts.innerHTML += inputDes; */
   });
 
